@@ -14,7 +14,7 @@ all:
 
 ```sh
 # ansible all -i hosts.ini -m ping
-> ansible all --inventory hosts.ini --module-name ping
+ansible all --inventory hosts.ini --module-name ping -vvv
 
 # on MacOSX
 local | SUCCESS => {
@@ -36,7 +36,7 @@ local | SUCCESS => {
 ```
 
 ```sh
-> ansible all --inventory hosts.ini --args "df -h"
+ansible all --inventory hosts.ini --args "df -h" -vvv
 ```
 
 ## 참조
