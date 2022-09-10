@@ -196,3 +196,8 @@ ansible-galaxy install mdelapenya.go
 
 - [Tips and tricks](https://docs.ansible.com/ansible/latest/user_guide/playbooks_best_practices.html)
 - [Roles](https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse_roles.html)
+- 앤서블 철저 입문 - 히로가와 히데토시 외
+- 앤서블 시작과 실행 - 로린 혹스테인, 르네 모저
+- 우아하게 앤서블 - 조훈, 김정민
+- Continuous Delivery with Docker and Jenkins - Rafal Leszko
+
