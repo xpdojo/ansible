@@ -1,0 +1,7 @@
+- hosts: local
+  connection: local
+  # become: yes
+
+  tasks:
+    - name: tasks for current OS
+      include_tasks: "distribution/{{ansible_facts['os_family']}}.yaml"
