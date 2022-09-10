@@ -13,6 +13,7 @@
       - [files](#files)
       - [meta](#meta)
       - [templates](#templates)
+    - [play recap](#play-recap)
   - [Galaxy](#galaxy)
     - [Role 검색](#role-검색)
     - [Role 설치](#role-설치)
@@ -88,7 +89,9 @@ SSH로 접속하기 위해 SSH 서버 데몬이 필요하다.
 ansible-playbook main.yaml --inventory hosts.ini
 ```
 
-![Entity-relationship diagram of a ansible playbook](images/ansible-entities.png) - Ansible Up & Running
+![Entity-relationship diagram of a ansible playbook](images/ansible-entities.png)
+
+_Entity-relationship diagram of a ansible playbook - Ansible: Up & Running_
 
 ### inventory
 
@@ -131,6 +134,44 @@ Handlers are tasks that only run when notified.
 #### templates
 
 Jinja 2 파일을 가리킨다.
+
+### play recap
+
+- [The play recap that summarizes results of all tasks in the playbook per host.](https://docs.ansible.com/ansible/6/getting_started/get_started_playbook.html#creating-a-playbook)
+- [ansible/lib/ansible/plugins/callback/default.py](https://github.com/ansible/ansible/blob/29bdb8bf1e1ab7ca35721dad1a58efc966d56bd4/lib/ansible/plugins/callback/default.py)
+  - ok: 에러 없이, 변경사항 없이 성공적으로 실행된 task.
+  - changed: [changed_when](https://docs.ansible.com/ansible/6/user_guide/playbooks_error_handling.html#defining-changed) 조건에 해당하거나,
+    성공적으로 실행되고 호스트에 어떤 변경사항을 만든 task.
+  - unreachable: [ignore_unreachable](https://docs.ansible.com/ansible/6/user_guide/playbooks_error_handling.html#ignoring-unreachable-host-errors)
+    설정이 `yes` 혹은 `true`이면 연결할 수 없는 host는 무시하는 task.
+  - failed: [failed_when](https://docs.ansible.com/ansible/6/user_guide/playbooks_error_handling.html#defining-failure) 조건에 해당하거나,
+    실행 중 실패한 task.
+  - skipped: `when` 조건이 `false`이기 때문에 실행되지 않은 task.
+  - rescued: [block](https://docs.ansible.com/ansible/6/user_guide/playbooks_blocks.html#handling-errors-with-blocks)에서 에러가 발생했을 경우
+    `rescue`를 통해 에러를 처리할 수 있는 task.
+  - ignored: 실패했지만 [ignore_errors](https://docs.ansible.com/ansible/6/user_guide/playbooks_error_handling.html#ignoring-failed-commands)
+    설정이 `yes` 혹은 `true`인 task.
+
+```yaml
+# https://devops.stackexchange.com/questions/14542/
+- hosts: localhost
+  tasks:
+    - name: Task will be SKIPPED
+      debug:
+        msg: You will never see this message.
+      when: false
+
+    - name: Failed command will be IGNORED
+      command: /usr/bin/false
+      ignore_errors: true
+
+    - name: Failed command will be RESCUED
+      block:
+        - command: /usr/bin/false
+      rescue:
+        - debug:
+            msg: "{{ ansible_failed_result }}"
+```
 
 ## Galaxy
 
