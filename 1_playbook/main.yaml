@@ -1,0 +1,6 @@
+- hosts: local
+  tasks:
+    - name: 환경 변수 조회
+      command: pwd
+    - debug: 
+        msg: "{{ansible_env}}"
