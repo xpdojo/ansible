@@ -1,0 +1,104 @@
+---
+- name: Configure Red Hat Linux
+  hosts: all
+  become: true
+  gather_facts: true
+
+  tasks:
+    - name: Update system packages
+      dnf:
+        name: "*"
+        state: latest
+        update_cache: yes
+
+    - name: Install development tools
+      dnf:
+        name:
+          - git
+          - python3
+          - python3-pip
+          - nodejs
+          - npm
+          - htop
+          - tree
+          - gcc
+          - make
+        state: present
+
+    - name: Set timezone to Asia/Seoul
+      command: timedatectl set-timezone Asia/Seoul
+      changed_when: true
+
+    - name: Display current date and time
+      command: date
+      register: current_date
+      changed_when: false
+
+    - name: Show current date and time
+      debug:
+        msg: "현재 시간: {{ current_date.stdout }}"
+
+    - name: Verify timezone setting
+      command: timedatectl
+      register: timezone_info
+      changed_when: false
+
+    - name: Check if timezone is set to Asia/Seoul
+      assert:
+        that: "'Asia/Seoul' in timezone_info.stdout"
+        fail_msg: "Timezone is not set to Asia/Seoul"
+        success_msg: "Timezone is correctly set to Asia/Seoul"
+
+    - name: Install FFmpeg
+      block:
+        - name: Set user home directory
+          become: false
+          set_fact:
+            user_home: "{{ lookup('env', 'HOME') }}"
+
+        - name: Download and extract FFmpeg
+          become: false
+          shell: |
+            cd {{ user_home }} && \
+            wget https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz && \
+            mkdir -p {{ user_home }}/ffmpeg-release-amd64-static && \
+            tar -xf {{ user_home }}/ffmpeg-release-amd64-static.tar.xz --strip-components=1 -C {{ user_home }}/ffmpeg-release-amd64-static && \
+            rm -f {{ user_home }}/ffmpeg-release-amd64-static.tar.xz
+          args:
+            creates: "{{ user_home }}/ffmpeg-release-amd64-static/ffmpeg"
+
+        - name: Create FFmpeg symlink
+          become: true
+          file:
+            src: "{{ user_home }}/ffmpeg-release-amd64-static/ffmpeg"
+            dest: /usr/local/bin/ffmpeg
+            state: link
+            force: yes
+
+        - name: Verify FFmpeg installation
+          become: false
+          shell: ffmpeg -version
+          register: ffmpeg_version
+          changed_when: false
+
+        - name: Display FFmpeg version
+          debug:
+            msg: "{{ ffmpeg_version.stdout_lines[0] }}"
+
+    - name: Install SDKMAN
+      become: false
+      shell: |
+        curl -s "https://get.sdkman.io" | bash
+      args:
+        creates: ~/.sdkman
+
+    - name: Source SDKMAN
+      become: false
+      shell: |
+        source "$HOME/.sdkman/bin/sdkman-init.sh" && sdk version
+
+    - name: Install Java
+      become: false
+      shell: |
+        source "$HOME/.sdkman/bin/sdkman-init.sh" && \
+        sdk install java 17.0.14-tem
