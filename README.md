@@ -21,22 +21,13 @@
 
 ## 설치
 
-- [Installing Ansible](https://docs.ansible.com/ansible/6/installation_guide/intro_installation.html)
-  - [Installing Ansible on specific operating systems](https://docs.ansible.com/ansible/6/installation_guide/installation_distros.html)
+- [Installing Ansible on specific operating systems](https://docs.ansible.com/ansible/latest/installation_guide/installation_distros.html)
+- [Installing Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
 
 ### Ubuntu
 
 ```sh
-sudo apt update
-sudo apt install ansible
-ls /usr/bin/ansible*
-# /usr/bin/ansible             /usr/bin/ansible-galaxy
-# /usr/bin/ansible-config      /usr/bin/ansible-inventory
-# /usr/bin/ansible-connection  /usr/bin/ansible-playbook
-# /usr/bin/ansible-console     /usr/bin/ansible-pull
-# /usr/bin/ansible-doc         /usr/bin/ansible-vault
-
-python3 -m pip install --user argcomplete
+apt install ansible
 ```
 
 ```sh
@@ -200,4 +191,3 @@ ansible-galaxy install mdelapenya.go
 - 앤서블 시작과 실행 - 로린 혹스테인, 르네 모저
 - 우아하게 앤서블 - 조훈, 김정민
 - Continuous Delivery with Docker and Jenkins - Rafal Leszko
-

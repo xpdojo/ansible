@@ -1,0 +1,14 @@
+---
+# 시스템 설정 변수
+timezone: Asia/Seoul
+
+# 로케일 설정
+system_locale: en_US.UTF-8
+system_language: en_US.UTF-8
+system_lc_all: en_US.UTF-8
+
+# 추가로 설치할 패키지 목록
+additional_packages: []
+
+# 방화벽 설정
+ufw_additional_rules: [] 

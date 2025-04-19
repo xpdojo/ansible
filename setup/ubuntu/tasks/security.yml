@@ -1,0 +1,27 @@
+---
+- name: UFW 방화벽 비활성화
+  ufw:
+    state: disabled
+
+- name: SELinux 상태 확인
+  stat:
+    path: /etc/selinux/config
+  register: selinux_config
+
+- name: AppArmor 상태 확인
+  stat:
+    path: /etc/apparmor.d
+  register: apparmor_config
+
+- name: SELinux 비활성화
+  selinux:
+    state: disabled
+  when: selinux_config.stat.exists
+  register: selinux_disable
+
+- name: AppArmor 비활성화
+  service:
+    name: apparmor
+    state: stopped
+    enabled: no
+  when: apparmor_config.stat.exists

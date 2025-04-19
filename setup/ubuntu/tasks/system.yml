@@ -1,0 +1,22 @@
+---
+- name: 시스템 시간대 설정
+  timezone:
+    name: "{{ timezone }}"
+
+- name: Locale 생성
+  locale_gen:
+    name: "{{ system_locale }}"
+    state: present
+
+- name: 시스템 Locale 설정
+  blockinfile:
+    path: /etc/default/locale
+    create: yes
+    block: |
+      LANG={{ system_language }}
+      LC_ALL={{ system_lc_all }}
+  register: locale_config
+
+- name: Locale 변경사항 적용을 위한 재시작
+  reboot:
+  when: locale_config.changed

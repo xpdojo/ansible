@@ -1,0 +1,24 @@
+---
+- name: 시스템 패키지 업데이트
+  apt:
+    update_cache: yes
+    upgrade: yes
+
+- name: 기본 패키지 설치
+  apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - vim
+    - git
+    - curl
+    - wget
+    - htop
+    - net-tools
+    - openssh-server
+
+- name: SSH 서비스 활성화 및 시작
+  service:
+    name: ssh
+    state: started
+    enabled: true

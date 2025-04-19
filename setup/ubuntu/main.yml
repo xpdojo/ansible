@@ -1,0 +1,31 @@
+---
+- name: Ubuntu 서버 기본 설정 (순차 실행)
+  hosts: all
+  become: yes  # sudo 권한 사용 `--ask-become-pass`로 비밀번호 입력
+  serial: 1  # 순차 실행을 위한 설정
+  tags: 
+    - serial
+  
+  tasks:
+    - name: Ansible 환경 변수 출력
+      debug:
+        var: ansible_env
+
+    - name: 시스템 기본 설정 태스크 포함
+      include_tasks: tasks/system.yml
+
+    - name: 패키지 설치 태스크 포함
+      include_tasks: tasks/packages.yml
+
+- name: Ubuntu 서버 추가 설정 (병렬 실행)
+  hosts: all
+  become: yes
+  tags: 
+    - parallel
+  
+  tasks:
+    - name: 보안 설정 태스크 포함
+      include_tasks: tasks/security.yml
+
+    - name: SDKMAN 설치 태스크 포함
+      include_tasks: tasks/sdkman.yml

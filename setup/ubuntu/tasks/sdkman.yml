@@ -1,0 +1,37 @@
+---
+- name: SDKMAN 관련 태스크
+  become: false
+  block:
+    - name: 현재 사용자 홈 디렉토리 저장
+      set_fact:
+        user_home: "{{ lookup('env', 'HOME') }}"
+
+    - name: SDKMAN 설치를 위한 의존성 패키지 설치
+      become: true
+      apt:
+        name: 
+          - zip
+          - unzip
+        state: present
+
+    - name: SDKMAN 설치 여부 확인
+      stat:
+        path: "{{ user_home }}/.sdkman"
+      register: sdkman_dir
+
+    - name: SDKMAN 설치 스크립트 다운로드 및 실행
+      shell: |
+        curl -s "https://get.sdkman.io" | bash
+      args:
+        creates: "{{ user_home }}/.sdkman"
+        executable: /bin/bash
+      when: not sdkman_dir.stat.exists
+      register: sdkman_install
+      ignore_errors: true
+
+    - name: SDKMAN 초기화 스크립트를 .bashrc에 추가
+      lineinfile:
+        path: "{{ user_home }}/.bashrc"
+        line: 'source "$HOME/.sdkman/bin/sdkman-init.sh"'
+        state: present
+      when: not sdkman_dir.stat.exists and sdkman_install.changed
