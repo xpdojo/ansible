@@ -1,80 +1,14 @@
-# Ansible Playbook
+# Ansible
 
-- [Ansible Playbook](#ansible-playbook)
-  - [설치](#설치)
-    - [Ubuntu](#ubuntu)
-    - [MacOSX](#macosx)
-  - [Playbook](#playbook)
-    - [inventory](#inventory)
-    - [roles](#roles)
-      - [vars](#vars)
-      - [tasks](#tasks)
-      - [handlers](#handlers)
-      - [files](#files)
-      - [meta](#meta)
-      - [templates](#templates)
-    - [play recap](#play-recap)
-  - [Galaxy](#galaxy)
-    - [Role 검색](#role-검색)
-    - [Role 설치](#role-설치)
-  - [참조](#참조)
+- [Ansible](#ansible)
+- [Playbook](#playbook)
+  - [play recap](#play-recap)
+- [Galaxy](#galaxy)
+  - [Role 검색](#role-검색)
+  - [Role 설치](#role-설치)
+- [참조](#참조)
 
-## 설치
-
-- [Installing Ansible on specific operating systems](https://docs.ansible.com/ansible/latest/installation_guide/installation_distros.html)
-- [Installing Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
-
-### Ubuntu
-
-```sh
-apt install ansible
-```
-
-```sh
-> ip -br -c a
-lo               UNKNOWN        127.0.0.1/8 ::1/128
-enp1s0           DOWN
-wlo1             UP             192.168.219.105/24 fe80::9a7a:7d69:7088:3522/64
-```
-
-```sh
-# /etc/ansible/hosts
-[local]
-192.168.219.105 ansible_connection=local
-```
-
-SSH로 접속하기 위해 SSH 서버 데몬이 필요하다.
-
-```sh
-sudo apt install openssh-serverd
-sudo systemctl status sshd
-ansible all -m ping
-```
-
-### MacOSX
-
-```sh
-sudo easy_install pip
-python3 -m pip install --user ansible
-```
-
-```sh
-# .bashrc
-PATH=$PATH:/Users/markruler/Library/Python/3.10/bin
-```
-
-```sh
-source .bashrc
-```
-
-SSH로 접속하기 위해 SSH 서버 데몬이 필요하다.
-
-![MacOS SSHD](images/macos-sshd.png)
-
-- [이미지 출처](https://derflounder.wordpress.com/2021/09/29/enabling-full-disk-access-for-ssh-on-macos-big-sur-using-a-management-profile/)
-- [Allow a remote computer to access your Mac](https://support.apple.com/guide/mac-help/allow-a-remote-computer-to-access-your-mac-mchlp1066/mac) - Apple
-
-## Playbook
+# Playbook
 
 ```sh
 ansible-playbook main.yaml --inventory hosts.ini
@@ -82,51 +16,19 @@ ansible-playbook main.yaml --inventory hosts.ini
 
 ![Entity-relationship diagram of a ansible playbook](images/ansible-entities.png)
 
-_Entity-relationship diagram of a ansible playbook - Ansible: Up & Running_
+Entity-relationship diagram of a ansible playbook | Ansible: Up & Running
 
-### inventory
+- **inventory**는 Ansible 스크립트를 실행할 대상 호스트를 설정한다.
+  설정한 호스트와 연결하기 위해서는 해당 호스트에 SSH Daemon을 설치 및 실행한다.
+- **roles**는 다음 [Ansible artifacts](https://docs.ansible.com/ansible/6/user_guide/playbooks_reuse.html)를 한꺼번에 정의하고 읽는다.
+  - [vars](https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#understanding-variable-precedence) 재사용할 수 있는 변수를 지정한다.
+  - **tasks** playbook으로 실행할 모듈 작업을 설정한다. role을 사용한다면 이 항목은 필수다.
+  - **handlers** 설정된 상황에만 실행하는 task다.
+  - **files** 노드에 배포할 파일들을 가리킨다.
+  - **meta** 의존하는 다른 role을 선언한다.
+  - **templates** Jinja 2 파일을 가리킨다.
 
-Ansible 스크립트를 실행할 대상 호스트를 설정한다.
-설정한 호스트와 연결하기 위해서는 해당 호스트에 SSH Daemon을 설치 및 실행한다.
-
-### roles
-
-vars, files, tasks, handlers 과 같은
-Ansible artifacts를 한꺼번에 정의하고 읽는다.
-
-- [Re-using Ansible artifacts](https://docs.ansible.com/ansible/6/user_guide/playbooks_reuse.html)
-
-#### vars
-
-재사용할 수 있는 변수를 지정한다.
-
-- [Understanding variable precedence](https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#understanding-variable-precedence)
-
-#### tasks
-
-playbook으로 실행할 모듈 작업을 설정한다.
-role을 사용한다면 이 항목은 필수다.
-
-#### handlers
-
-Handlers are tasks that only run when notified.
-`handler`는 설정된 상황에만 실행하는 `task`다.
-예를 들어, 지정한 태스크가 정상적으로 이루어진 경우에
-`notify`를 통해 수행된다.
-
-#### files
-
-노드에 배포할 파일들을 가리킨다.
-
-#### meta
-
-의존하는 다른 role을 선언한다.
-
-#### templates
-
-Jinja 2 파일을 가리킨다.
-
-### play recap
+## play recap
 
 - [The play recap that summarizes results of all tasks in the playbook per host.](https://docs.ansible.com/ansible/6/getting_started/get_started_playbook.html#creating-a-playbook)
 - [ansible/lib/ansible/plugins/callback/default.py](https://github.com/ansible/ansible/blob/29bdb8bf1e1ab7ca35721dad1a58efc966d56bd4/lib/ansible/plugins/callback/default.py)
@@ -164,11 +66,11 @@ Jinja 2 파일을 가리킨다.
             msg: "{{ ansible_failed_result }}"
 ```
 
-## Galaxy
+# Galaxy
 
 공개된 Role을 검색하고 사용할 수 있다.
 
-### Role 검색
+## Role 검색
 
 - [웹 브라우저로 검색](https://galaxy.ansible.com/search?deprecated=false)
 
@@ -177,17 +79,17 @@ Jinja 2 파일을 가리킨다.
 ansible-galaxy search --galaxy-tags go
 ```
 
-### Role 설치
+## Role 설치
 
 ```sh
 ansible-galaxy install mdelapenya.go
 ```
 
-## 참조
+# 참조
 
-- [Tips and tricks](https://docs.ansible.com/ansible/latest/user_guide/playbooks_best_practices.html)
-- [Roles](https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse_roles.html)
-- 앤서블 철저 입문 - 히로가와 히데토시 외
-- 앤서블 시작과 실행 - 로린 혹스테인, 르네 모저
-- 우아하게 앤서블 - 조훈, 김정민
-- Continuous Delivery with Docker and Jenkins - Rafal Leszko
+- [Tips and tricks](https://docs.ansible.com/ansible/latest/user_guide/playbooks_best_practices.html) | Ansible
+- [Roles](https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse_roles.html) | Ansible
+- 책 '앤서블 철저 입문' | 히로가와 히데토시 외
+- 책 '앤서블 시작과 실행' | 로린 혹스테인, 르네 모저
+- 책 '우아하게 앤서블' | 조훈, 김정민
+- 책 'Continuous Delivery with Docker and Jenkins' | Rafal Leszko

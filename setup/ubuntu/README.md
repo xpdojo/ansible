@@ -1,5 +1,11 @@
 # Ansible Setup for Ubuntu
 
+# 설치
+
+```sh
+sudo apt install ansible
+```
+
 ```sh
 ansible -i setup/ubuntu/inventory all -m ping
 ```
