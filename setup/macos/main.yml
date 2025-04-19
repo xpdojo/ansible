@@ -1,0 +1,90 @@
+---
+- name: Configure macOS
+  hosts: localhost
+  connection: local
+  gather_facts: true
+
+  tasks:
+    - name: Install Oh My Zsh
+      become: false
+      shell: |
+        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+      args:
+        creates: ~/.oh-my-zsh
+
+    - name: Configure Oh My Zsh theme
+      become: false
+      lineinfile:
+        path: ~/.zshrc
+        regexp: '^ZSH_THEME='
+        line: 'ZSH_THEME="gozilla"'
+        create: yes
+
+    - name: Install Homebrew
+      become: false
+      shell: |
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      args:
+        creates: /opt/homebrew/bin/brew
+
+    - name: Install basic development tools
+      become: false
+      homebrew:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        # dev
+        - python
+        - node
+        - git
+        - wget
+        - curl
+        - htop
+        - tree
+        # - jetbrains-toolbox
+        # blog
+        - hugo
+        - sass/sass/sass
+        # media
+        - ffmpeg
+
+    - name: Update Homebrew
+      become: false
+      shell: |
+        echo -e "\n🚩 Homebrew update"
+        brew update && \
+        brew upgrade && \
+        brew cleanup
+
+    - name: Install SDKMAN
+      become: false
+      shell: |
+        curl -s "https://get.sdkman.io" | bash
+      args:
+        creates: ~/.sdkman
+
+    - name: Source SDKMAN
+      become: false
+      shell: |
+        source "$HOME/.sdkman/bin/sdkman-init.sh" && sdk version
+      args:
+        executable: /bin/zsh
+
+    - name: Install Java and Maven
+      become: false
+      shell: |
+        source "$HOME/.sdkman/bin/sdkman-init.sh" && \
+        sdk install java 17.0.14-tem
+      args:
+        executable: /bin/zsh
+
+    - name: Configure git
+      become: false
+      git_config:
+        name: "{{ item.name }}"
+        value: "{{ item.value }}"
+        scope: global
+      with_items:
+        - { name: "user.name", value: "Changsu Im" }
+        - { name: "user.email", value: "imcxsu@gmail.com" }
+        - { name: "core.editor", value: "vim" }

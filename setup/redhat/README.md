@@ -2,4 +2,5 @@
 
 ```sh
 sudo dnf install ansible
+ansible --version
 ```
