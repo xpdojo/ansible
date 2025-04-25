@@ -1,6 +1,6 @@
 # Ansible Setup for Ubuntu
 
-# 설치
+## 설치
 
 ```sh
 sudo apt install ansible -y

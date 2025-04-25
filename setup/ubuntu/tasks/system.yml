@@ -16,7 +16,3 @@
       LANG={{ system_language }}
       LC_ALL={{ system_lc_all }}
   register: locale_config
-
-- name: Locale 변경사항 적용을 위한 재시작
-  reboot:
-  when: locale_config.changed
